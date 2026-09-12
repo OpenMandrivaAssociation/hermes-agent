@@ -124,5 +124,4 @@ rm -f %{buildroot}%{_bindir}/hermes-omv-wrap
 %{py_sitedir}/plugins
 %{py_sitedir}/providers
 %{py_sitedir}/*.py
-%{py_sitedir}/__pycache__
 %{py_sitedir}/hermes_agent-*.*-info
