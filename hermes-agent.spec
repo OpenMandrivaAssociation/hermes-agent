@@ -9,6 +9,11 @@ Source0:	https://github.com/NousResearch/hermes-agent/archive/refs/tags/v%{versi
 Source1:	hermes-wrapper.sh
 Patch0:		0001-omv-system-python-llama-server.patch
 BuildArch:	noarch
+# Upstream pins exact PyPI versions in METADATA. The automatic
+# pythonX.Ydist() generator would require those exact versions
+# (and unpackaged firecrawl-anydoc). We list unversioned cooker
+# modules below instead.
+%global __requires_exclude ^python[0-9.]*dist\\(
 BuildRequires:	python
 BuildRequires:	pkgconfig(python)
 BuildRequires:	python%{pyver}dist(pip)
