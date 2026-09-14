@@ -1,6 +1,6 @@
 Name:		hermes-agent
 Version:	2026.9.14
-Release:	1
+Release:	2
 Summary:	Self-improving AI agent from Nous Research
 License:	MIT
 Group:		Development/Other
@@ -13,7 +13,9 @@ BuildArch:	noarch
 # pythonX.Ydist() generator would require those exact versions
 # (and unpackaged firecrawl-anydoc). We list unversioned cooker
 # modules below instead.
-%global __requires_exclude ^python[0-9.]*dist\\(
+# Also match rich boolean deps such as
+# (python3.14dist(pillow-heif) < 2 with python3.14dist(pillow-heif) >= 1.4)
+%global __requires_exclude python[0-9.]*dist\\(
 BuildRequires:	python
 BuildRequires:	pkgconfig(python)
 BuildRequires:	python%{pyver}dist(pip)
