@@ -1,5 +1,5 @@
 Name:		hermes-agent
-Version:	2026.9.11
+Version:	2026.9.14
 Release:	1
 Summary:	Self-improving AI agent from Nous Research
 License:	MIT
