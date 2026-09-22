@@ -1,6 +1,6 @@
 Name:		hermes-agent
-Version:	2026.9.14
-Release:	2
+Version:	2026.9.21
+Release:	1
 Summary:	Self-improving AI agent from Nous Research
 License:	MIT
 Group:		Development/Other
@@ -47,6 +47,8 @@ Requires:	python%{pyver}dist(websockets)
 Requires:	python%{pyver}dist(pathspec)
 Requires:	python%{pyver}dist(fastapi)
 Requires:	python%{pyver}dist(uvicorn)
+Requires:	python%{pyver}dist(httptools)
+Requires:	python%{pyver}dist(watchfiles)
 Requires:	python%{pyver}dist(python-multipart)
 Requires:	python%{pyver}dist(ptyprocess)
 Requires:	python%{pyver}dist(pillow)
