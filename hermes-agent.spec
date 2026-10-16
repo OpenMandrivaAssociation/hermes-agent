@@ -1,6 +1,6 @@
 Name:		hermes-agent
 Version:	2026.9.21
-Release:	1
+Release:	2
 Summary:	Self-improving AI agent from Nous Research
 License:	MIT
 Group:		Development/Other
@@ -14,7 +14,7 @@ BuildArch:	noarch
 # (and unpackaged firecrawl-anydoc). We list unversioned cooker
 # modules below instead.
 # Also match rich boolean deps such as
-# (python3.14dist(pillow-heif) < 2 with python3.14dist(pillow-heif) >= 1.4)
+# (pythonX.Ydist(pillow-heif) < 2 with pythonX.Ydist(pillow-heif) >= 1.4)
 %global __requires_exclude python[0-9.]*dist\\(
 BuildRequires:	python
 BuildRequires:	pkgconfig(python)
