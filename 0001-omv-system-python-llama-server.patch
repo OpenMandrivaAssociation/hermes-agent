@@ -1,8 +1,15 @@
-diff -Nru a/hermes_cli/local_runtime/binaries.py b/hermes_cli/local_runtime/binaries.py
---- a/hermes_cli/local_runtime/binaries.py	2026-09-12 02:34:44.016082140 +0200
-+++ b/hermes_cli/local_runtime/binaries.py	2026-09-12 02:34:54.614539247 +0200
-@@ -210,9 +210,24 @@
-                 progress(done, total)
+--- a/hermes_cli/local_runtime/binaries.py	2026-10-15 07:52:56.000000000 +0200
++++ b/hermes_cli/local_runtime/binaries.py	2026-10-16 19:21:24.123715365 +0200
+@@ -6,6 +6,7 @@
+ import logging
+ import os
+ import re
++import shutil
+ import threading
+ from contextlib import contextmanager, suppress
+ from dataclasses import dataclass
+@@ -113,8 +114,23 @@
+     return None
  
  
 +def system_llama_server() -> Path | None:
@@ -11,57 +18,50 @@ diff -Nru a/hermes_cli/local_runtime/binaries.py b/hermes_cli/local_runtime/bina
 +    which = shutil.which("llama-server")
 +    if which:
 +        candidates.append(Path(which))
-+    for p in candidates:
-+        if p.is_file() and os.access(p, os.X_OK):
-+            return p
++    for candidate in candidates:
++        if candidate.is_file() and os.access(candidate, os.X_OK):
++            return candidate
 +    return None
 +
 +
- def server_binary(install_dir: Path) -> Path:
-     """Locate llama-server within an extracted runtime (zips differ in whether they nest a
-     build/bin directory)."""
+ def installed_engine(backend: str = "auto", *, allow_outdated: bool = True) -> Engine | None:
+     """Boot may retain a prior PM pin and moves a pre-PM engine into PM's store once; it never downloads."""
 +    sys_bin = system_llama_server()
 +    if sys_bin is not None:
-+        return sys_bin
-     names = ("llama-server.exe", "llama-server")
-     for name in names:
-         direct = install_dir / name
-@@ -257,6 +272,15 @@
-     ``expected_sha256`` pins hashes per asset; without pins the computed hash is recorded in the
-     manifest (trust on first download, verified on every reinstall). ``progress(stage, done,
-     total, label)`` ticks through download/extract/verify."""
++        return Engine("cpu", "system", sys_bin)
+     vendor = None
+     if backend == "auto":
+         from hermes_cli.local_runtime.bootstrap import _detect_gpu_vendor
+@@ -244,6 +260,9 @@
+                   pause_event: threading.Event | None = None,
+                   download_progress: ProgressFn | None = None) -> Engine:
+     """Only deliberate install/update jobs call this. PM verifies every archive and publishes."""
 +    sys_bin = system_llama_server()
 +    if sys_bin is not None:
-+        install_dir = runtimes_root() / "system"
-+        install_dir.mkdir(parents=True, exist_ok=True)
-+        link = install_dir / "llama-server"
-+        if not link.exists():
-+            link.symlink_to(sys_bin)
-+        return install_dir
-+
-     plan = resolve_assets(tag, backend)
-     install_dir = plan.install_dir
-     manifest_path = install_dir / "manifest.json"
-diff -Nru a/pyproject.toml b/pyproject.toml
---- a/pyproject.toml	2026-09-12 02:34:43.996895289 +0200
-+++ b/pyproject.toml	2026-09-12 02:34:54.630539443 +0200
++        return Engine("cpu", "system", sys_bin)
+     resolved = resolve_backend(backend)
+     pm.ensure(BACKEND_PACKAGES[resolved], explicit=True, progress=progress,
+               pause_event=pause_event, download_progress=download_progress)
+--- a/pyproject.toml	2026-10-15 07:52:56.000000000 +0200
++++ b/pyproject.toml	2026-10-16 19:21:24.123912738 +0200
 @@ -12,7 +12,9 @@
- # wheel yet and fall back to a maturin source build that fails. Capping at
- # <3.14 makes uv refuse 3.14 with a clear error instead of attempting that
- # build. Raise the ceiling once our Rust transitives ship cp314 wheels.
--requires-python = ">=3.11,<3.14"
-+# Distro Python is 3.14+; the <3.14 cap is for uv/pydantic-core wheels.
-+# Cooker builds pydantic-core from source / ships a 3.14 package.
+ # to get thru their update step on old python.
+ # Shortly after they do, we update to our latest python.
+ # See tests/compat/README.md for the updater contract this keeps.
+-requires-python = ">=3.11,<3.15"
++# Distro Python is 3.15; the <3.15 cap is for upstream wheels.
++# Cooker ships pydantic-core and the other Rust stacks itself.
 +requires-python = ">=3.11"
  authors = [{ name = "Nous Research" }]
  license = "MIT"
  license-files = ["LICENSE"]
-@@ -175,7 +177,7 @@
+@@ -213,7 +215,8 @@
    # 738 CPython reports sys_platform == 'android' and never matched.) Pre-GKI
    # devices can still slip through; they get the same resolution failure as
    # before, worked around by installing with `--no-deps` or an older release.
--  "nemo-relay>=0.8.3,<0.9; (sys_platform == 'darwin' and platform_machine == 'arm64') or (sys_platform == 'linux' and platform_machine == 'x86_64' and 'android' not in platform_release) or (sys_platform == 'linux' and platform_machine == 'aarch64' and 'android' not in platform_release) or (sys_platform == 'win32' and platform_machine == 'AMD64') or (sys_platform == 'win32' and platform_machine == 'ARM64')",
+-  "nemo-relay>=0.10,<0.11; ((sys_platform == 'darwin' and platform_machine == 'arm64') or (sys_platform == 'linux' and platform_machine == 'x86_64' and 'android' not in platform_release) or (sys_platform == 'linux' and platform_machine == 'aarch64' and 'android' not in platform_release) or (sys_platform == 'win32' and platform_machine == 'AMD64') or (sys_platform == 'win32' and platform_machine == 'ARM64')) and python_version >= '3.14'",]
 +  # nemo-relay is not packaged; Hermes has a no-op Relay host fallback.
- ]
++]
  
  [project.optional-dependencies]
+ # High-performance event loop — uvloop replaces the stdlib asyncio loop with
