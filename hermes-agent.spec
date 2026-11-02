@@ -1,6 +1,6 @@
 Name:		hermes-agent
 Epoch:		1
-Version:	0.22.5
+Version:	0.22.6
 Release:	1
 Summary:	Self-improving AI agent from Nous Research
 License:	MIT
@@ -12,8 +12,9 @@ Patch0:		0001-omv-system-python-llama-server.patch
 BuildArch:	noarch
 # Upstream pins exact PyPI versions in METADATA. The automatic
 # pythonX.Ydist() generator would require those exact versions
-# (and unpackaged firecrawl-anydoc). We list unversioned cooker
-# modules below instead.
+# and unpackaged modules (firecrawl-anydoc, browser-harness,
+# pillow-heif, resvg-py). Those imports are lazy. We list
+# unversioned cooker modules below instead.
 # Also match rich boolean deps such as
 # (pythonX.Ydist(pillow-heif) < 2 with pythonX.Ydist(pillow-heif) >= 1.4)
 %global __requires_exclude python[0-9.]*dist\\(
