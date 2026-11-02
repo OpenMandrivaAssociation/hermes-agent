@@ -1,7 +1,7 @@
 Name:		hermes-agent
 Epoch:		1
 Version:	0.22.6
-Release:	1
+Release:	2
 Summary:	Self-improving AI agent from Nous Research
 License:	MIT
 Group:		Development/Other
@@ -11,10 +11,9 @@ Source1:	hermes-wrapper.sh
 Patch0:		0001-omv-system-python-llama-server.patch
 BuildArch:	noarch
 # Upstream pins exact PyPI versions in METADATA. The automatic
-# pythonX.Ydist() generator would require those exact versions
-# and unpackaged modules (firecrawl-anydoc, browser-harness,
-# pillow-heif, resvg-py). Those imports are lazy. We list
-# unversioned cooker modules below instead.
+# pythonX.Ydist() generator would require those exact versions.
+# The optional modules are Suggests, and their imports stay lazy.
+# We list unversioned cooker modules below instead.
 # Also match rich boolean deps such as
 # (pythonX.Ydist(pillow-heif) < 2 with pythonX.Ydist(pillow-heif) >= 1.4)
 %global __requires_exclude python[0-9.]*dist\\(
@@ -61,6 +60,10 @@ Recommends:	ripgrep
 Recommends:	git-core
 Recommends:	ffmpeg
 Recommends:	nodejs
+Suggests:	python%{pyver}dist(firecrawl-anydoc)
+Suggests:	python%{pyver}dist(browser-harness)
+Suggests:	python%{pyver}dist(pillow-heif)
+Suggests:	python%{pyver}dist(resvg-py)
 
 %description
 Hermes Agent is a self-improving AI agent built by Nous Research.
