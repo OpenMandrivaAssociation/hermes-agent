@@ -1,6 +1,6 @@
 Name:		hermes-agent
 Epoch:		1
-Version:	0.23.1
+Version:	0.23.2
 Release:	1
 Summary:	Self-improving AI agent from Nous Research
 License:	MIT
@@ -29,7 +29,6 @@ Requires:	python%{pyver}dist(python-dotenv)
 Requires:	python%{pyver}dist(fire)
 Requires:	python%{pyver}dist(httpx)
 Requires:	python%{pyver}dist(rich)
-Requires:	python%{pyver}dist(tenacity)
 Requires:	python%{pyver}dist(ruamel.yaml)
 Requires:	python%{pyver}dist(truststore)
 Requires:	python%{pyver}dist(tomli-w)
@@ -141,5 +140,6 @@ rm -f %{buildroot}%{_bindir}/hermes-omv-wrap
 %{py_sitedir}/hermes_platform
 %{py_sitedir}/hermes_agent
 %{py_sitedir}/pm
+%{py_sitedir}/utils
 %{py_sitedir}/*.py
 %{py_sitedir}/hermes_agent-*.*-info
