@@ -1,6 +1,6 @@
 Name:		hermes-agent
 Epoch:		1
-Version:	0.23.2
+Version:	0.23.3
 Release:	1
 Summary:	Self-improving AI agent from Nous Research
 License:	MIT
@@ -140,6 +140,8 @@ rm -f %{buildroot}%{_bindir}/hermes-omv-wrap
 %{py_sitedir}/hermes_platform
 %{py_sitedir}/hermes_agent
 %{py_sitedir}/pm
+%{py_sitedir}/persistence
+%{py_sitedir}/session_rules
 %{py_sitedir}/utils
 %{py_sitedir}/*.py
 %{py_sitedir}/hermes_agent-*.*-info
